@@ -61,7 +61,7 @@ except IOError:
     target_size = (64, 64),
     batch_size = 32,
     class_mode = 'binary')
-    
+
     classifier.fit_generator(training_set,
     steps_per_epoch = 5000,
     epochs = 15,
@@ -71,15 +71,15 @@ except IOError:
     
     # Part 2.5 - saving the model to disk
     model = classifier.to_json()
-    with open("model.json", "w") as json_file:
-    	json_file.write(model)
+    with open("model.json", "w") as model_json_file:
+        model_json_file.write(model)
     classifier.save_weights("model.h5")
     print("Saved model to disk")
 
 # Part 3 - Loading model from disk
-json_file = open("model.json", "r")
-loaded_model_json = json_file.read()
-json_file.close()
+model_json_file = open("model.json", "r")
+loaded_model_json = model_json_file.read()
+model_json_file.close()
 loaded_model = model_from_json(loaded_model_json)
 loaded_model.load_weights("model.h5")
 print("Loaded model from disk")
@@ -93,9 +93,8 @@ test_image = image.img_to_array(test_image)
 test_image = np.expand_dims(test_image, axis=0)
 result = loaded_model.predict(test_image)
 
-training_set.class_indices
 if result[0][0] == 1:
     prediction = 'dog'
 else:
     prediction = 'cat'
-print("\n\nPREDICTION: ", prediction, "\n\n")
+print("\n\nPREDICTION: ", prediction)
