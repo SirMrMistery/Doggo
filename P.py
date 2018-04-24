@@ -39,7 +39,7 @@ except IOError:
     
     # Compiling the CNN
     print("Compiling the CNN")
-    classifier.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
+    classifier.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['acc'])
     
     # Part 2 - Fitting the CNN to the images
     print("Part 2 - Fitting the CNN to the images")
@@ -62,11 +62,43 @@ except IOError:
     batch_size = 32,
     class_mode = 'binary')
 
-    classifier.fit_generator(training_set,
-    steps_per_epoch = 5000,
-    epochs = 15,
+    # adjust these to change the number of epochs and 
+    # steps for training and testing
+    s_per_epoch = 5000
+    n_epoch = 15
+    v_steps = 2000
+    
+    classifier_metrics = classifier.fit_generator(training_set,
+    steps_per_epoch = s_per_epoch,
+    epochs = n_epoch,
     validation_data = test_set,
-    validation_steps = 2000)
+    validation_steps = v_steps)
+    
+    # get the various metrics to be recorded
+    acc = classifier_metrics.history['acc']
+    loss = classifier_metrics.history['loss']
+    val_acc = classifier_metrics.history['val_acc']
+    val_loss = classifier_metrics.history['val_loss']
+    
+    # init counter
+    i = 0
+    
+    metrics_file = open("metrics.txt", 'w')
+    
+    #  write metrics to file
+    while i < n_epoch:
+        i += 1
+        metrics_file.write(str("Epoch " + str(i) +":"))
+        metrics_file.write(str("\taccuracy: " + str(acc[i-1])))
+        metrics_file.write(str("\tloss: " + str(loss[i-1])))
+        metrics_file.write(str("\tvalidaton accuracy: " + str(val_acc[i-1])))
+        metrics_file.write(str("\tvalidation loss: " + str(val_loss[i-1])))
+        metrics_file.write("\n")
+    
+    metrics_file.close()
+        
+
+    
     #plot_model(classifier, to_file='model_plot.png', show_shapes=True, show_layer_names=True)
     
     # Part 2.5 - saving the model to disk
@@ -88,10 +120,22 @@ print("Loaded model from disk")
 print("Part 3 - Making new predictions")
 import numpy as np
 from keras.preprocessing import image
-test_image = image.load_img('dataset/single_prediction/cat_or_dog_1.jpg', target_size=(64, 64))
+# ask for number of predicitons to make
+test_image_number = input('Enter the number of predictions you would like to make: ')
+# set counter
+i = 0
+# grab a random image from the prediction dataset until all predictions are made
+while i < int(test_image_number):
+    i += 1
+
+# old image loading code, remove when above loop is implemented
+test_image = image.load_img('dataset/single_prediction/neither1.jpg', target_size=(64, 64))
 test_image = image.img_to_array(test_image)
+# this needs to be changed I think, see https://keras.io/models/sequential/ and the predict function
 test_image = np.expand_dims(test_image, axis=0)
 result = loaded_model.predict(test_image)
+
+print(result[0][0])
 
 if result[0][0] == 1:
     prediction = 'dog'
