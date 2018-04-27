@@ -6,6 +6,7 @@ from keras.layers import MaxPooling2D
 from keras.layers import Flatten
 from keras.layers import Dense
 import json
+from PIL import Image
 from os import walk
 from keras.utils.vis_utils import plot_model
 from keras.datasets import mnist
@@ -180,8 +181,8 @@ while cont == '0':
         break
 
     test_image_number = input('\nEnter the number of the image you would like to predict on: ')
-
-    test_image = image.load_img('dataset/single_prediction/'+filenames[int(test_image_number)], target_size=(64, 64))
+    fileName = 'dataset/single_prediction/'+filenames[int(test_image_number)]
+    test_image = image.load_img(fileName, target_size=(64, 64))
     test_image = image.img_to_array(test_image)
     # this needs to be changed I think, see https://keras.io/models/sequential/ and the predict function
     test_image = np.expand_dims(test_image, axis=0)
@@ -192,9 +193,11 @@ while cont == '0':
 
     print(labels)
     print("\n\nPREDICTION: ", labels.get(str(result2[0])))
-
+    img = Image.open(fileName)
+    img.show()
     cont = input("\nMake more predictions? (type 0 for yes or anything else for no)")
 
     cont = cont.strip()
+    index = 0
     #print(cont)
     #print(type(cont))
