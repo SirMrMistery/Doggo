@@ -12,18 +12,13 @@ from keras.utils.vis_utils import plot_model
 from keras.datasets import mnist
 (train_images, train_labels), (test_images, test_labels) = mnist.load_data()
 
-#for train in train_images:
-#    print(train)
-#    print("************")
-#print(type(train_images))
-#print("***********************")
-#print(train_labels.shape)
-#for test in test_labels:
-#    print(test)
 labels = {}
 
+# Open the model to be read if it exists
 try:
     open("model2.json", "r")
+
+# Create it if it doesn't exists
 except IOError:
 
     # Initialising the CNN
@@ -78,15 +73,10 @@ except IOError:
     labels_file = open("labels.txt", 'w')
     labels_file.write(json.dumps(labels))
 
-    #for cl in training_set.classes:
-    #    print(cl)
     print("###############")
     print(type(training_set.classes))
     headersList = [labels.get(item, item) for item in training_set.classes]
     print(headersList)
-
-    #for sett in training_set:
-    #    print(sett)
 
     test_set = test_datagen.flow_from_directory('dataset/test_set',
                                                 target_size=(64, 64),
@@ -105,7 +95,6 @@ except IOError:
                                                   validation_data=test_set,
                                                   validation_steps=v_steps)
 
-    #print(training_set.shape)
 
     # get the various metrics to be recorded
     acc = classifier_metrics.history['acc']
@@ -116,6 +105,7 @@ except IOError:
     # init counter
     i = 0
 
+    # Open 2nd metrics file to write to
     metrics_file = open("metrics2.txt", 'w')
 
     #  write metrics to file
@@ -141,9 +131,17 @@ except IOError:
 
 # Part 3 - Loading model from disk
 model_json_file = open("model2.json", "r")
+
+# Read model
 loaded_model_json = model_json_file.read()
+
+# Close model
 model_json_file.close()
+
+# Store loaded model
 loaded_model = model_from_json(loaded_model_json)
+
+# Load weights
 loaded_model.load_weights("model2.h5")
 print("Loaded model from disk")
 
@@ -152,26 +150,18 @@ print("Part 3 - Making new predictions")
 import numpy as np
 from keras.preprocessing import image
 
-# ask for number of predicitons to make
-#test_image_number = input('Enter the number of predictions you would like to make: ')
-# set counter
-#i = 0
-# grab a random image from the prediction dataset until all predictions are made
-#while i < int(test_image_number):
-   # i += 1
-
-
-
-
+# String for user input
 cont = '0'
 index = 0
 
 print("\n\n")
 
+# Open labels file
 with open("labels.txt") as f:
         for line in f:
             labels = json.loads(line)
 
+# Display user picture options
 while cont == '0':
     for (dirpath, dirnames, filenames) in walk('dataset/single_prediction/'):
         print("\n\nPREDICTION FILES")
@@ -180,24 +170,46 @@ while cont == '0':
             index += 1
         break
 
+    # Reads user input to allow choice of picture
     test_image_number = input('\nEnter the number of the image you would like to predict on: ')
+    
+    # Store filename based on user input
     fileName = 'dataset/single_prediction/'+filenames[int(test_image_number)]
+    
+    # Load image user choice
     test_image = image.load_img(fileName, target_size=(64, 64))
     test_image = image.img_to_array(test_image)
+    
     # this needs to be changed I think, see https://keras.io/models/sequential/ and the predict function
     test_image = np.expand_dims(test_image, axis=0)
+    
+    # Store the prediction
     result = loaded_model.predict(test_image)
     result2 = loaded_model.predict_classes(test_image)
+    
+    # Print out the result
     print(result)
+   
+    # Print out the prediction choice
     print(result2)
 
+    # Print the array of options
     print(labels)
-    print("\n\nPREDICTION: ", labels.get(str(result2[0])))
-    img = Image.open(fileName)
-    img.show()
-    cont = input("\nMake more predictions? (type 0 for yes or anything else for no)")
 
+    # Print the final prediction
+    print("\n\nPREDICTION: ", labels.get(str(result2[0])))
+    
+    # Open the image that was used
+    img = Image.open(fileName)
+    
+    # Show it on screen to the user
+    img.show()
+
+    # Continue to prompt user until they enter something that isn't 0
+    cont = input("\nMake more predictions? (type 0 for yes or anything else for no): ")
+
+    # Strip user input
     cont = cont.strip()
+    
+    # Reset index to 0
     index = 0
-    #print(cont)
-    #print(type(cont))
