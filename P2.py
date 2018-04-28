@@ -171,7 +171,10 @@ while cont == '0':
         break
 
     # Reads user input to allow choice of picture
-    test_image_number = input('\nEnter the number of the image you would like to predict on: ')
+    while True:
+        test_image_number = input('\nEnter a valid number of the image you would like to predict on: ')
+        if int(test_image_number) > 0 and int(test_image_number) < 12:
+            break
     
     # Store filename based on user input
     fileName = 'dataset/single_prediction/'+filenames[int(test_image_number)]
