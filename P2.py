@@ -6,17 +6,22 @@ from keras.layers import MaxPooling2D
 from keras.layers import Flatten
 from keras.layers import Dense
 import json
-from PIL import Image
+from PIL import ImageTk, Image as Img
 from os import walk
 from keras.utils.vis_utils import plot_model
 from keras.datasets import mnist
 (train_images, train_labels), (test_images, test_labels) = mnist.load_data()
 
+from tkinter import *
+from tkinter import messagebox
+from tkinter import filedialog
+
 labels = {}
+
 
 # Open the model to be read if it exists
 try:
-    open("model2.json", "r")
+    open("model.json", "r")
 
 # Create it if it doesn't exists
 except IOError:
@@ -124,95 +129,128 @@ except IOError:
 
     # Part 2.5 - saving the model to disk
     model = classifier.to_json()
-    with open("model2.json", "w") as model_json_file:
+    with open("model.json", "w") as model_json_file:
         model_json_file.write(model)
-    classifier.save_weights("model2.h5")
+    classifier.save_weights("model.h5")
     print("Saved model to disk")
 
-# Part 3 - Loading model from disk
-model_json_file = open("model2.json", "r")
+# Interface initialization
+window = Tk()
+window.title("Commence The Doggo!")
+window.geometry('600x600')
+window.configure(background='grey')
 
-# Read model
-loaded_model_json = model_json_file.read()
+# Image panel created
+panel = Label(image="")
+panel.pack(side = "bottom", fill = "both", expand = "yes")
 
-# Close model
-model_json_file.close()
+# GUI greeting created
+lbl = Label(window, text="Doggo Knows All", font=("Arial Bold", 30))
+lbl.pack(side = "bottom", fill = "both", expand = "no")
 
-# Store loaded model
-loaded_model = model_from_json(loaded_model_json)
+def clicked():
+	# Open directory dialog box for photo selection
+	fileName = filedialog.askopenfilename(initialdir="dataset/single_prediction/")
 
-# Load weights
-loaded_model.load_weights("model2.h5")
-print("Loaded model from disk")
+	# Part 3 - Loading model from disk
+	model_json_file = open("model.json", "r")
 
-# Part 3.5 - Making new predictions
-print("Part 3 - Making new predictions")
-import numpy as np
-from keras.preprocessing import image
+	# Read model
+	loaded_model_json = model_json_file.read()
 
-# String for user input
-cont = '0'
-index = 0
+	# Close model
+	model_json_file.close()
 
-print("\n\n")
+	# Store loaded model
+	loaded_model = model_from_json(loaded_model_json)
 
-# Open labels file
-with open("labels.txt") as f:
-        for line in f:
-            labels = json.loads(line)
+	# Load weights
+	loaded_model.load_weights("model.h5")
+	print("Loaded model from disk")
 
-# Display user picture options
-while cont == '0':
-    for (dirpath, dirnames, filenames) in walk('dataset/single_prediction/'):
-        print("\n\nPREDICTION FILES")
-        for fn in filenames:
-            print(index,fn)
-            index += 1
-        break
+	# Part 3.5 - Making new predictions
+	print("Part 3 - Making new predictions")
+	import numpy as np
+	from keras.preprocessing import image
 
-    # Reads user input to allow choice of picture
-    while True:
-        test_image_number = input('\nEnter a valid number of the image you would like to predict on: ')
-        if int(test_image_number) > -1 and int(test_image_number) < 13:
-            break
-    
-    # Store filename based on user input
-    fileName = 'dataset/single_prediction/'+filenames[int(test_image_number)]
+	# String for user input
+	cont = '0'
+	index = 0
+
+	print("\n\n")
+
+	# Open labels file
+	with open("labels.txt") as f:
+	        for line in f:
+	            labels = json.loads(line)
+
+	# Display user picture options
+	# while cont == '0':
+	#     for (dirpath, dirnames, filenames) in walk('dataset/single_prediction/'):
+	#         print("\n\nPREDICTION FILES")
+	#         for fn in filenames:
+	#             print(index,fn)
+	#             index += 1
+	#         break
+
+	#     # Reads user input to allow choice of picture
+	#     while True:
+	#         test_image_number = input('\nEnter a valid number of the image you would like to predict on: ')
+	#         if int(test_image_number) > -1 and int(test_image_number) < 13:
+	#             break
+	    
+	# Store filename based on user input
+    #fileName2 = 'dataset/single_prediction/'+filenames[int(test_image_number)]
     
     # Load image user choice
-    test_image = image.load_img(fileName, target_size=(64, 64))
-    test_image = image.img_to_array(test_image)
-    
-    # this needs to be changed I think, see https://keras.io/models/sequential/ and the predict function
-    test_image = np.expand_dims(test_image, axis=0)
-    
-    # Store the prediction
-    result = loaded_model.predict(test_image)
-    result2 = loaded_model.predict_classes(test_image)
-    
-    # Print out the result
-    print(result)
-   
-    # Print out the prediction choice
-    print(result2)
+	test_image = image.load_img(fileName, target_size=(64, 64))
+	test_image = image.img_to_array(test_image)
 
-    # Print the array of options
-    print(labels)
+	# this needs to be changed I think, see https://keras.io/models/sequential/ and the predict function
+	test_image = np.expand_dims(test_image, axis=0)
 
-    # Print the final prediction
-    print("\n\nPREDICTION: ", labels.get(str(result2[0])))
-    
-    # Open the image that was used
-    img = Image.open(fileName)
-    
-    # Show it on screen to the user
-    img.show()
+	# Store the prediction
+	result = loaded_model.predict(test_image)
+	result2 = loaded_model.predict_classes(test_image)
 
-    # Continue to prompt user until they enter something that isn't 0
-    cont = input("\nMake more predictions? (type 0 for yes or anything else for no): ")
+	# Print out the result
+	print(result)
 
-    # Strip user input
-    cont = cont.strip()
-    
-    # Reset index to 0
-    index = 0
+	# Print out the prediction choice
+	print(result2)
+
+	# Print the array of options
+	print(labels)
+
+	# Print the final prediction
+	print("\n\nPREDICTION: ", labels.get(str(result2[0])))
+
+	# Print prediction to interface
+	lbl.configure(text = "Prediction: " + labels.get(str(result2[0])))
+
+	# # Open the image that was used
+	# img = PIL.Image.open(fileName)
+
+	# # Show it on screen to the user
+	# img.show()
+
+	# Continue to prompt user until they enter something that isn't 0
+	#cont = input("\nMake more predictions? (type 0 for yes or anything else for no): ")
+
+	# User image loaded to interface
+	img2 = ImageTk.PhotoImage(Img.open(fileName))
+	panel.configure(image=img2)
+	panel.image = img2
+
+	# Strip user input
+	cont = cont.strip()
+
+	# Reset index to 0
+	index = 0
+
+# Photo selection button initialized and loaded to interface
+btn = Button(window,text='Click here to select photo', command=clicked)
+btn.pack(side = "top", fill = "both", expand = "no")
+
+# Endless interface loop
+window.mainloop()
