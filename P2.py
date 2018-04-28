@@ -173,7 +173,7 @@ while cont == '0':
     # Reads user input to allow choice of picture
     while True:
         test_image_number = input('\nEnter a valid number of the image you would like to predict on: ')
-        if int(test_image_number) > 0 and int(test_image_number) < 12:
+        if int(test_image_number) > 0 and int(test_image_number) < 13:
             break
     
     # Store filename based on user input
