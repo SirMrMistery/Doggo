@@ -1,0 +1,15 @@
+Epoch 1:	accuracy: 0.752034163707	loss: 0.580527405485	validaton accuracy: 0.713060489925	validation loss: 0.738251645324
+Epoch 2:	accuracy: 0.840745801314	loss: 0.406686516223	validaton accuracy: 0.77026371393	validation loss: 0.652161593383
+Epoch 3:	accuracy: 0.863874733099	loss: 0.363429253566	validaton accuracy: 0.788230691015	validation loss: 0.844823483633
+Epoch 4:	accuracy: 0.875086121	loss: 0.347496713507	validaton accuracy: 0.744205336878	validation loss: 0.971077961543
+Epoch 5:	accuracy: 0.874369484773	loss: 0.356272229604	validaton accuracy: 0.763690429651	validation loss: 0.870751558118
+Epoch 6:	accuracy: 0.873526900089	loss: 0.365979380713	validaton accuracy: 0.653368808246	validation loss: 1.84510717907
+Epoch 7:	accuracy: 0.860632118454	loss: 0.404573383941	validaton accuracy: 0.785116206288	validation loss: 0.95952601594
+Epoch 8:	accuracy: 0.859009393686	loss: 0.408063183368	validaton accuracy: 0.708725252357	validation loss: 1.74534225456
+Epoch 9:	accuracy: 0.8674295474	loss: 0.388988497697	validaton accuracy: 0.744048830145	validation loss: 1.49673514516
+Epoch 10:	accuracy: 0.871965836303	loss: 0.378196490089	validaton accuracy: 0.755473824282	validation loss: 1.33755688966
+Epoch 11:	accuracy: 0.870952313172	loss: 0.377859727178	validaton accuracy: 0.712716174991	validation loss: 1.21644213852
+Epoch 12:	accuracy: 0.860731672604	loss: 0.416541455666	validaton accuracy: 0.779920181581	validation loss: 1.33550509007
+Epoch 13:	accuracy: 0.858383148311	loss: 0.418108196544	validaton accuracy: 0.792393770999	validation loss: 0.969203151722
+Epoch 14:	accuracy: 0.854711073162	loss: 0.429838516193	validaton accuracy: 0.787714218682	validation loss: 0.947011052332
+Epoch 15:	accuracy: 0.859188612104	loss: 0.424404688398	validaton accuracy: 0.756115502009	validation loss: 1.51221547658
